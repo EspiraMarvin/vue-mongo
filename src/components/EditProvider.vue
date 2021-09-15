@@ -27,9 +27,9 @@
       </q-card-section>
       <q-separator />
 
-      <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn flat label="cancel" v-close-popup />
-        <q-btn flat label="update" @click="btnSave" />
+      <q-card-actions align="right" class="bg-white text-black">
+        <q-btn class="q-px-md" label="cancel" v-close-popup />
+        <q-btn class="q-px-md" label="update" @click="btnSave" />
       </q-card-actions>
     </q-card>
 </template>

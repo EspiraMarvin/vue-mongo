@@ -42,6 +42,7 @@ const actions = {
   },
   EDIT_PROVIDER(context, payload){
     context.commit('')
+    console.log('payload',payload)
     return new Promise((resolve, reject) => {
       axios.put(`${providerAPI}/payload.id`)
         .then(response => {

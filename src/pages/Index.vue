@@ -54,7 +54,7 @@
               {{ props.row[col.name] }}
             </q-td>
             <q-td class="text-center" v-if="col.name === 'providers'" :key="col.name">
-                {{ getProvidersValues(props.row[col.name]) }}
+                {{ getNames(props.row[col.name]) }}
             </q-td>
             <q-td v-if="col.name === 'actions'" :key="col.name" class="text-center">
               <q-btn
@@ -100,12 +100,17 @@ export default {
     this.$store.dispatch('clients/FETCH_CLIENTS')
   },
   methods: {
-    getProvidersValues(clientArr) {
-      return clientArr.map((array1value, index) => {
-        // if (array1value) return array1value['name']
-        // if (index) return
-        return this.providersResults[index]
+    getNames(clientProvidersArray) {
+      const names = [];
+      clientProvidersArray.forEach(item => {
+        console.log('item', item)
+        const resultsIndex = this.providersResults.findIndex(providerItem => providerItem._id === item.id)
+        console.log('resultsIndex',resultsIndex)
+        if (resultsIndex >= 0) {
+          names.push(this.providersResults[resultsIndex].name)
+        }
       })
+      return this.providersValuesToString(names)
     },
     providersValuesToString(arr) {
       return arr.reduce((acc, cur, idx) => {

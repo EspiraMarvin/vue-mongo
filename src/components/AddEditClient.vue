@@ -244,7 +244,7 @@ export default {
         this.clientForm.name = clientClone.name;
         this.clientForm.email = clientClone.email;
         this.clientForm.phone = clientClone.phone;
-        this.clientForm.providers = clientClone.providers;
+        this.clientForm.providers = clientClone.providers.map(item => item.id);
         // console.log('clientClone.providers', clientClone.providers)
         // this.providerSelection = this.clientDetailsToEdit.providers
         // this.providerSelection = clientClone.providers
