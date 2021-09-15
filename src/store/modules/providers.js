@@ -37,23 +37,42 @@ const actions = {
         })
     })
   },
-  ADD_PROVIDER(context) {
-
+  ADD_PROVIDER(context, payload) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${providerAPI}`, {
+        name: payload.name
+      })
+        .then(response => {
+          context.dispatch('FETCH_PROVIDERS')
+          resolve(response)
+        })
+        .catch(error => reject(error))
+    })
   },
   EDIT_PROVIDER(context, payload){
-    context.commit('')
-    console.log('payload',payload)
     return new Promise((resolve, reject) => {
-      axios.put(`${providerAPI}/payload.id`)
+      axios.put(`${providerAPI}/${payload.id}`, {
+        name: payload.name
+      })
         .then(response => {
+          context.dispatch('FETCH_PROVIDERS')
+          resolve(response)
+        })
+        .catch(error => reject(error))
+    })
+  },
+  DELETE_PROVIDER(context, payload){
+    const providerId = payload._id
+    return new Promise((resolve, reject) => {
+      axios.delete(`${providerAPI}/${providerId}`)
+        .then(response => {
+          context.dispatch('FETCH_PROVIDERS')
           resolve(response)
         })
         .catch(error => {
           reject(error)
         })
     })
-  },
-  DELETE_PROVIDER(context){
 
   }
 }

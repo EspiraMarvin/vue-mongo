@@ -2,11 +2,7 @@
   <div style="width: 800px; max-width: 350vw;">
   <q-card>
     <q-toolbar>
-      <q-toolbar-title>{{ isEditing ? 'Edit Client' : 'Add Client' }}</q-toolbar-title>
-      {{ clientForm }}
-<!--      {{ clientDetailsToEdit }}-->
-<!--      {{ providerSelection }}-->
-<!--      {{ clientForm.providers }}-->
+      <q-toolbar-title class="text-primary">{{ isEditing ? 'Edit Client' : 'Add Client' }}</q-toolbar-title>
     </q-toolbar>
     <q-separator />
     <q-card-section>
@@ -37,15 +33,17 @@
           </div>
         </div>
           <div class="col-md-6 col-xs-12 q-pa-md">
-          <q-input
-            outlined
-            v-model="clientForm.phone"
-            placeholder="Phone *"
-            type="number"
-            lazy-rules
-            :rules="[val => !!val || 'Phone is missing', phoneValid]"
-          />
-        </div>
+            <q-form ref="addProviderForm">
+              <q-input
+                outlined
+                v-model="clientForm.phone"
+                placeholder="Phone *"
+                type="number"
+                lazy-rules
+                :rules="[val => !!val || 'Phone is missing', phoneValid]"
+              />
+            </q-form>
+          </div>
         <div class="row">
           <div class="col-md-8 col-xs-12 q-pa-md">
             <q-input
@@ -55,21 +53,15 @@
               type="text"
               lazy-rules
             />
-<!--            <q-select-->
-<!--              multiple-->
-<!--              filled-->
-<!--              v-model="clientForm.providers"-->
-<!--              :options="providers"-->
-<!--              :label="Providers"-->
-<!--            />-->
           </div>
           <div class="col-md-4 col-xs-12 q-pa-md">
             <q-btn
               size="md"
               class="q-pa-sm full-width text-capitalize"
-              lable="Add Provider"
               @click="btnAddProvider"
               label="Add Provider"
+              :loading="submittingProviders"
+              :disable="isDisabled"
             />
           </div>
         </div>
@@ -78,11 +70,12 @@
         <div class="row">
          <div class="col-md-8 col-xs-12 q-pa-md">
            <q-card>
-              <q-list>
+             <q-scroll-area class="full-width" style="height: 200px">
+               <q-list>
                   <q-item v-for="provider in providers" :key="provider._id">
                   <q-item-section>
                     <q-checkbox
-                      v-model="clientForm.providers" :val="provider._id" :label="provider.name" color="primary"
+                      v-model="clientForm.providers" :val="provider._id" :label="provider.name" color="primary" class="text-capitalize"
                     />
                   </q-item-section>
                     <q-item-section class="text-right">
@@ -93,13 +86,13 @@
                           size="sm"
                          color="positive"
                           icon="edit"
-                          @click="editProvider(provider) === true"
+                          @click="btnEditProvider(provider) === true"
                          />
                         <q-btn
                           class="q-ma-xs"
                          outline
                           size="sm"
-                          @click="btnDelete(props.row)"
+                          @click="confirm(provider)"
                           color="negative"
                           icon="delete"
                          />
@@ -107,11 +100,26 @@
                     </q-item-section>
                   </q-item>
               </q-list>
+             </q-scroll-area>
             </q-card>
           </div>
         </div>
       </q-form>
     </q-card-section>
+
+    <q-separator />
+    <div class="row">
+    <q-card-actions align="left">
+      <q-btn
+        size="md"
+        class="q-pl-md q-pr-md q-mr-md text-capitalize"
+        label="Delete Client"
+        color="negative"
+        icon-right="delete"
+        @click="confirm"
+      />
+    </q-card-actions>
+      <q-space />
     <q-card-actions align="right">
       <q-btn
         size="md"
@@ -132,11 +140,13 @@
         </template>
       </q-btn>
     </q-card-actions>
+    </div>
   </q-card>
 
   <q-dialog v-model="AddEditProviderDialog">
     <EditProvider
       :providerDetailsToEdit="providerDetailsToEdit"
+      :closeEditProviderDialog="closeEditProviderDialog"
     />
   </q-dialog>
 
@@ -163,79 +173,123 @@ export default {
     providers: {
       type: Array,
       required: false
+    },
+    closeAddEditClientDialog: {
+      type: Function,
+      required: false
     }
-  },
-  computed: {
-    // isDisabled(){
-      // return !isEqual(this.providerSelection, this.clientForm.providers)
-    // }
   },
   data() {
     return {
-      model: null,
       isEqual: isEqual,
-      AddEditProviderDialog: false,
       ...utils,
       clientForm: {
-        id: '',
-        name: 'marvin',
-        email: 'marvin@gmail.com',
-        phone: '12025886500',
+        name: '',
+        email: '',
+        phone: '',
         providers: []
       },
       providerForm: {
         name: ''
       },
       providerDetailsToEdit: {},
-      providerSelection: [],
+      AddEditProviderDialog: false,
       submitting: false,
+      submittingProviders: false
     };
   },
   mounted() {
     this.populateForm();
-    console.log('type of providerSelection', typeof this.providerSelection)
-    console.log('type of clientForm.providers', typeof this.clientForm.providers)
+  },
+  computed: {
+    isDisabled() {
+      return !this.providerForm.name.replace(/\s/g, '').length
+    }
   },
   methods: {
     btnAddProvider() {
-      // this.clientForm.providers = this.providerSelection
+      this.submittingProviders = true
+        this.$store.dispatch('providers/ADD_PROVIDER', this.providerForm)
+          .then(response => {
+            this.providerForm.name = ''
+            this.submittingProviders = false
+            this.showNotification(this, 'Provider Added', 'primary','check_circle');
+          })
+          .catch(error => {
+            this.submittingProviders = false
+            this.showNotification(this, `${error.message}`, 'red-5','error');
+          })
     },
-    editProvider(provider) {
+    btnEditProvider(provider) {
       this.AddEditProviderDialog = true
       this.providerDetailsToEdit = provider
+    },
+    closeEditProviderDialog(){
+      this.AddEditProviderDialog = false
     },
     btnSave() {
       console.log('this.form', this.clientForm)
       this.$refs.clientForm.validate().then(success => {
         if (success) {
-          console.log('client added provider', this.clientForm.providers)
-          console.log('client added', this.clientForm)
           this.submitting = true;
           if (this.isEditing) {
             this.$store
               .dispatch('clients/EDIT_CLIENT', this.clientForm)
               .then(response => {
-                this.$emit('successAddEdit', true);
-              })
-              .catch(err => {
                 this.submitting = false;
-                this.showMissingFieldsErrors(this, err);
+                this.showNotification(this, 'Client Updated', 'primary','check_circle');
+              })
+              .catch(error => {
+                this.submitting = false;
+                this.showNotification(this, `${error.message}`, 'red-5','error');
               });
           } else {
             this.$store
-              .dispatch('users/ADD_USER', this.clientForm)
+              .dispatch('clients/ADD_CLIENT', this.clientForm)
               .then(response => {
-                this.$emit('successAddEdit', true);
-              })
-              .catch(err => {
                 this.submitting = false;
-                this.showMissingFieldsErrors(this, err);
+                this.closeAddEditClientDialog()
+                this.showNotification(this, 'Client Added', 'primary','check_circle');
+              })
+              .catch(error => {
+                this.submitting = false;
+                this.showNotification(this, `${error.message}`, 'red-5','error');
               });
           }
         } else {
-          this.showNotification(this, 'negative', 'Please fill the fields');
+          this.showNotification(this, 'Please fill the fields','red-5','warning');
         }
       });
+    },
+    confirm (item) {
+      item = item['name'] ? item : item = this.clientForm
+      const itemTitle = item['name'] ? item['name'] : ''
+      this.$q.dialog({
+        title: 'Confirm',
+        message: `Are you use you want to delete ${itemTitle}?`,
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        if (!item['email']){
+          // delete provider
+          this.$store.dispatch('providers/DELETE_PROVIDER', item)
+            .then(response => {
+              this.showNotification(this, 'Provider Deleted', 'primary','check_circle');
+            })
+            .catch(error => {
+              this.showNotification(this, `${error.message}`,'red-5','warning');
+            })
+        }else {
+          // delete client
+          this.$store.dispatch('clients/DELETE_CLIENT', item)
+            .then(response => {
+              this.showNotification(this, 'Client Deleted', 'primary','check_circle');
+            })
+            .catch(error => {
+              this.showNotification(this, `${error.message}`,'red-5','warning');
+            })
+        }
+      })
     },
     populateForm() {
       if (this.isEditing) {
@@ -245,15 +299,8 @@ export default {
         this.clientForm.email = clientClone.email;
         this.clientForm.phone = clientClone.phone;
         this.clientForm.providers = clientClone.providers.map(item => item.id);
-        // console.log('clientClone.providers', clientClone.providers)
-        // this.providerSelection = this.clientDetailsToEdit.providers
-        // this.providerSelection = clientClone.providers
-        // console.log('providerSelection', this.providerSelection)
-
       }
     }
   }
 };
 </script>
-
-<style scoped></style>

@@ -22,7 +22,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const newProvider = new Provider(req.body)
 
-  console.log('newProvidereeeeeerrrrrrrrr', newProvider)
   try{
     const provider = await newProvider.save()
     console.log('provider at post req', provider)

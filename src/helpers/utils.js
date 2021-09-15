@@ -7,14 +7,12 @@ const hasWhiteSpacesOnly = val => {
   return val.replace(/\s/g, '').length || 'Field is empty';
 };
 
-// const emailFormat
 // check email format
 const emailFormat = val => {
   const regex = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
 
   return regex.test(val) || 'Invalid email';
 };
-
 
 // check correct phone format
 const { phone } = require('phone');
@@ -24,15 +22,26 @@ const phoneValid = val => {
 // eg of valid no.
 // 00-1-202-588-6500
 
+// 0012025886500
 // 12025886500
 
-const showNotification = function(vm, type, message, position = 'top-right') {
+const showNotification = function(vm, message, color, icon , position = 'top-right',) {
   vm.$q.notify({
-    type: type,
+    message: message,
+    color: color,
+    icon: icon,
+    position: position
+  });
+};
+
+export const showSuccessNotification = function(vm, message = 'Success!', position = 'top-right') {
+  vm.$q.notify({
+    type: 'positive',
     message: message,
     position: position
   });
 };
+
 
 export default {
   formatString,
@@ -42,4 +51,3 @@ export default {
   emailFormat
 }
 
-// :label="isEqual(this.providerSelection, this.clientForm.providers) ? 'Add Provider' : 'Update Selected Providers'"

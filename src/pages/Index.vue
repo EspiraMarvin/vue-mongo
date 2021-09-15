@@ -1,6 +1,6 @@
 <template>
-  <q-page class="q-pa-md q-mt-xl">
-    <div class="text-h6 q-ma-md">
+  <q-page class="q-pa-md">
+    <div class="text-h5 q-ma-md">
       List of clients
     </div>
     <q-table
@@ -60,17 +60,11 @@
               <q-btn
                 class="q-ma-xs"
                 outline
-                color="positive"
-                icon="edit"
+                label="Edit"
+                color="primary"
+                icon-right="edit"
                 @click="btnEdit(props.row)"
-              ></q-btn>
-              <q-btn
-                class="q-ma-xs"
-                outline
-                @click="btnDelete(props.row)"
-                color="negative"
-                icon="delete"
-              ></q-btn>
+               />
             </q-td>
           </template>
         </q-tr>
@@ -83,6 +77,7 @@
         :isEditing="isEditing"
         :providers="providersResults"
         :clientDetailsToEdit="clientDetailsToEdit"
+        :closeAddEditClientDialog="closeAddEditClientDialog"
       />
     </q-dialog>
   </q-page>
@@ -91,7 +86,6 @@
 <script>
 import {mapGetters} from 'vuex'
 import AddEditClient from "components/AddEditClient";
-
 export default {
   name: 'PageIndex',
   components: {AddEditClient},
@@ -103,9 +97,7 @@ export default {
     getNames(clientProvidersArray) {
       const names = [];
       clientProvidersArray.forEach(item => {
-        console.log('item', item)
         const resultsIndex = this.providersResults.findIndex(providerItem => providerItem._id === item.id)
-        console.log('resultsIndex',resultsIndex)
         if (resultsIndex >= 0) {
           names.push(this.providersResults[resultsIndex].name)
         }
@@ -125,13 +117,12 @@ export default {
       this.AddEditClientDialog = true;
     },
     btnEdit(client) {
-      console.log('edit', client)
       this.isEditing = true;
       this.clientDetailsToEdit = client
       this.AddEditClientDialog = true;
     },
-    btnDelete(item) {
-      console.log('delete', item._id)
+    closeAddEditClientDialog() {
+      this.AddEditClientDialog = false;
     }
   },
   data () {
@@ -178,6 +169,6 @@ export default {
       }
       return columnObjects
     }
-  },
+  }
 }
 </script>

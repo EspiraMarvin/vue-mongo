@@ -1,15 +1,14 @@
 <template>
     <q-card class="" style="width: 500px; max-width: 350vw;">
-      {{ providerDetailsToEdit }}
       <q-card-section>
-        <div class="text-h6">Edit Provider</div>
+        <div class="text-h6 text-primary">Edit Provider</div>
       </q-card-section>
       <q-separator />
 
       <q-card-section class="q-pt-none">
         <q-form ref="providerForm">
           <div class="row">
-            <div class="col-md-6 col-xs-12 q-pa-md">
+            <div class="col-12 q-pa-md">
               <q-input
                 outlined
                 v-model="providerForm.name"
@@ -25,11 +24,12 @@
           </div>
         </q-form>
       </q-card-section>
+
       <q-separator />
 
       <q-card-actions align="right" class="bg-white text-black">
         <q-btn class="q-px-md" label="cancel" v-close-popup />
-        <q-btn class="q-px-md" label="update" @click="btnSave" />
+        <q-btn class="q-px-md" label="update" @click="btnSaveEditedProvider" />
       </q-card-actions>
     </q-card>
 </template>
@@ -43,6 +43,10 @@ name: "EditProvider",
     providerDetailsToEdit: {
       type: Object,
       required: true
+    },
+    closeEditProviderDialog: {
+      type: Function,
+      required: true
     }
   },
   mounted() {
@@ -53,22 +57,26 @@ name: "EditProvider",
       ...utils,
       providerForm: {
         id: '',
-        name: '',
-        label: ''
+        name: ''
       }
     }
   },
   methods: {
-    btnSave() {
-      // console.log('providerForm', this.providerForm)
+    btnSaveEditedProvider() {
+      // providerForm
       this.$store.dispatch('providers/EDIT_PROVIDER', this.providerForm)
+      .then(response => {
+        this.closeEditProviderDialog()
+        this.showNotification(this, 'Provider Updated', 'primary','check_circle');
+      })
+      .catch(error =>  {
+        this.showNotification(this, `${error.message}`,'red-5', 'error');
+      })
     },
     populateProviderForm() {
       const providerClone = cloneDeep(this.providerDetailsToEdit)
-      console.log('providerClone', providerClone)
       this.providerForm.id = providerClone._id;
-      this.providerForm.name = providerClone.name;
-      this.providerForm.label = providerClone.label;
+      this.providerForm.name = providerClone.name
     }
   }
 }

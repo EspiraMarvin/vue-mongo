@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const clientAPI = 'http://localhost:4000/api/client'
+
 const state = () => ({
   clients: [],
   fetchingClients: false
@@ -23,7 +25,7 @@ const actions = {
   FETCH_CLIENTS(context) {
     context.commit('SET_FETCHING_CLIENTS', true)
     return new Promise((resolve, reject) => {
-      axios.get('http://localhost:4000/api/client')
+      axios.get(`${clientAPI}`)
         .then(response => {
           context.commit('SET_FETCHING_CLIENTS', false)
           context.commit('SET_CLIENTS', response.data)
@@ -35,15 +37,61 @@ const actions = {
         })
     })
   },
-  ADD_CLIENT(context) {
+  ADD_CLIENT(context, payload) {
+    payload.providersObject = []
+    payload.providers.forEach(provider => {
+      payload.providersObject.push({
+        id: provider
+      })
+    })
+    return new Promise((resolve, reject) => {
+      axios.post(`${clientAPI}`, {
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        providers: payload.providersObject
+      })
+        .then(response => {
+          context.dispatch('FETCH_CLIENTS')
+          resolve(response)
+        })
+        .catch(error => reject(error))
+    })
+  },
+  EDIT_CLIENT(context, payload) {
+    payload.providersObject = []
+    payload.providers.forEach(provider => {
+      payload.providersObject.push({
+        id: provider
+      })
+    })
+    return new Promise((resolve, reject) => {
+      axios.put(`${clientAPI}/${payload.id}`, {
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        providers: payload.providersObject
+      })
+        .then(response => {
+          context.dispatch('FETCH_CLIENTS')
+          resolve(response)
+        })
+        .catch(error => reject(error))
+    })
 
   },
-  EDIT_CLIENT(context) {
-
-  },
-  DELETE_CLIENT(context) {
-
+  DELETE_CLIENT(context, payload) {
+    const clientId = payload.id
+    return new Promise((resolve, reject) => {
+      axios.delete(`${clientAPI}/${clientId}`)
+        .then(response => {
+          context.dispatch('FETCH_CLIENTS')
+          resolve(response)
+        })
+        .catch(error => reject(error))
+    })
   }
+
 }
 
 export default {
