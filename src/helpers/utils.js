@@ -1,3 +1,4 @@
+
 const formatString = function(string) {
   return string.replace(/_/g, ' ');
 };
@@ -17,13 +18,15 @@ const emailFormat = val => {
 // check correct phone format
 const { phone } = require('phone');
 const phoneValid = val => {
-  return phone(val, { country: 'US' }).isValid || 'Invalid Phone Number';
+  return phone(val, { country: 'USA' }).isValid || 'Invalid Phone Number';
 };
 // eg of valid no.
 // 00-1-202-588-6500
 
 // 0012025886500
 // 12025886500
+// (817) 569-8900
+
 
 const showNotification = function(vm, message, color, icon , position = 'top-right',) {
   vm.$q.notify({
@@ -33,15 +36,6 @@ const showNotification = function(vm, message, color, icon , position = 'top-rig
     position: position
   });
 };
-
-export const showSuccessNotification = function(vm, message = 'Success!', position = 'top-right') {
-  vm.$q.notify({
-    type: 'positive',
-    message: message,
-    position: position
-  });
-};
-
 
 export default {
   formatString,

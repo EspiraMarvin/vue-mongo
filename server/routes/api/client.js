@@ -28,8 +28,13 @@ router.post('/', async (req, res) => {
     console.log('client at post req', client)
     if (!client) throw new Error('Something went wrong saving client')
     res.status(200).json({success: true, client: client, message: 'Client Added Success'})
-  } catch (e) {
-   res.status(500).json({success: false, error: e, errorCode: e.code, errorMessage: e.message})
+  } catch (error) {
+    if (error.code === 11000){
+      res.json({success: false, error: error,  errorMessage: 'Client Already Exists'}).status(500)
+    }else {
+      res.status(500).json({success: false, error: error, errorMessage: error.message})
+      // res.status(500).json({success: false, error: error, errorCode: error.code, errorMessage: error.message})
+    }
   }
 })
 

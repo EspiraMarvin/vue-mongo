@@ -38,15 +38,23 @@ const actions = {
     })
   },
   ADD_PROVIDER(context, payload) {
+    const providerName = payload.name.toLowerCase()
     return new Promise((resolve, reject) => {
       axios.post(`${providerAPI}`, {
-        name: payload.name
+        name: providerName
       })
         .then(response => {
-          context.dispatch('FETCH_PROVIDERS')
-          resolve(response)
+          if (response.data.success){
+            context.dispatch('FETCH_PROVIDERS')
+            resolve(response)
+          }else if (response.data['error'].code === 11000){
+            const error = 'The Provider Already Exists'
+            reject(error)
+          }
         })
-        .catch(error => reject(error))
+        .catch((error) => {
+          reject(error)
+        })
     })
   },
   EDIT_PROVIDER(context, payload){

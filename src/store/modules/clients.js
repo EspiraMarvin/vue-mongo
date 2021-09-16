@@ -52,10 +52,17 @@ const actions = {
         providers: payload.providersObject
       })
         .then(response => {
-          context.dispatch('FETCH_CLIENTS')
-          resolve(response)
+          if (response.data.success){
+            context.dispatch('FETCH_CLIENTS')
+            resolve(response)
+          }else if (response.data['error'].code === 11000){
+            const error = 'The Client Already Exists'
+            reject(error)
+          }
         })
-        .catch(error => reject(error))
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   EDIT_CLIENT(context, payload) {
@@ -81,7 +88,7 @@ const actions = {
 
   },
   DELETE_CLIENT(context, payload) {
-    const clientId = payload.id
+    const clientId = payload.id ? payload.id : payload._id
     return new Promise((resolve, reject) => {
       axios.delete(`${clientAPI}/${clientId}`)
         .then(response => {

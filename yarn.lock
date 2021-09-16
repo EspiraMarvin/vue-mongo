@@ -1891,6 +1891,11 @@ autoprefixer@9.8.6:
     postcss "^7.0.32"
     postcss-value-parser "^4.1.0"
 
+awesome-phonenumber@^2.59.0:
+  version "2.59.0"
+  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.59.0.tgz#9a45f08167d92b1c177cbe2a3df313f8b19d8ebe"
+  integrity sha512-ySAF+Xe0M1NWvj8FMYcgsMMWGuFJAH1DJL9T/juFfozV6bOe0IifP50W+MdyBMQI2rQsNm5mNXBwdVGuwATkmQ==
+
 axios@^0.21.4:
   version "0.21.4"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"

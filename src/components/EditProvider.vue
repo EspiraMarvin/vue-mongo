@@ -4,7 +4,6 @@
         <div class="text-h6 text-primary">Edit Provider</div>
       </q-card-section>
       <q-separator />
-
       <q-card-section class="q-pt-none">
         <q-form ref="providerForm">
           <div class="row">
@@ -24,9 +23,7 @@
           </div>
         </q-form>
       </q-card-section>
-
       <q-separator />
-
       <q-card-actions align="right" class="bg-white text-black">
         <q-btn class="q-px-md" label="cancel" v-close-popup />
         <q-btn class="q-px-md" label="update" @click="btnSaveEditedProvider" />

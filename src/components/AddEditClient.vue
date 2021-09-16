@@ -111,6 +111,7 @@
     <div class="row">
     <q-card-actions align="left">
       <q-btn
+        v-if="isEditing"
         size="md"
         class="q-pl-md q-pr-md q-mr-md text-capitalize"
         label="Delete Client"
@@ -147,6 +148,8 @@
     <EditProvider
       :providerDetailsToEdit="providerDetailsToEdit"
       :closeEditProviderDialog="closeEditProviderDialog"
+      :closeAddEditClientDialog="closeAddEditClientDialog"
+      :confirm="confirm"
     />
   </q-dialog>
 
@@ -176,12 +179,11 @@ export default {
     },
     closeAddEditClientDialog: {
       type: Function,
-      required: false
+      required: true
     }
   },
   data() {
     return {
-      isEqual: isEqual,
       ...utils,
       clientForm: {
         name: '',
@@ -192,6 +194,7 @@ export default {
       providerForm: {
         name: ''
       },
+      isEqual: isEqual,
       providerDetailsToEdit: {},
       AddEditProviderDialog: false,
       submitting: false,
@@ -211,13 +214,13 @@ export default {
       this.submittingProviders = true
         this.$store.dispatch('providers/ADD_PROVIDER', this.providerForm)
           .then(response => {
-            this.providerForm.name = ''
             this.submittingProviders = false
-            this.showNotification(this, 'Provider Added', 'primary','check_circle');
+              this.providerForm.name = ''
+              this.showNotification(this, 'Provider Added', 'primary','check_circle');
           })
-          .catch(error => {
+          .catch((error) => {
             this.submittingProviders = false
-            this.showNotification(this, `${error.message}`, 'red-5','error');
+            this.showNotification(this, `${error}`, 'red-5','error');
           })
     },
     btnEditProvider(provider) {
@@ -228,7 +231,6 @@ export default {
       this.AddEditProviderDialog = false
     },
     btnSave() {
-      console.log('this.form', this.clientForm)
       this.$refs.clientForm.validate().then(success => {
         if (success) {
           this.submitting = true;
@@ -237,6 +239,7 @@ export default {
               .dispatch('clients/EDIT_CLIENT', this.clientForm)
               .then(response => {
                 this.submitting = false;
+                this.closeAddEditClientDialog()
                 this.showNotification(this, 'Client Updated', 'primary','check_circle');
               })
               .catch(error => {
@@ -247,13 +250,14 @@ export default {
             this.$store
               .dispatch('clients/ADD_CLIENT', this.clientForm)
               .then(response => {
+                console.log('add client responseeeeeeeeeee', response)
                 this.submitting = false;
                 this.closeAddEditClientDialog()
                 this.showNotification(this, 'Client Added', 'primary','check_circle');
               })
               .catch(error => {
                 this.submitting = false;
-                this.showNotification(this, `${error.message}`, 'red-5','error');
+                this.showNotification(this, `${error}`, 'red-5','error');
               });
           }
         } else {
@@ -283,6 +287,7 @@ export default {
           // delete client
           this.$store.dispatch('clients/DELETE_CLIENT', item)
             .then(response => {
+              this.closeAddEditClientDialog()
               this.showNotification(this, 'Client Deleted', 'primary','check_circle');
             })
             .catch(error => {

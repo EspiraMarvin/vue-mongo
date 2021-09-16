@@ -60,11 +60,17 @@
               <q-btn
                 class="q-ma-xs"
                 outline
-                label="Edit"
                 color="primary"
                 icon-right="edit"
                 @click="btnEdit(props.row)"
                />
+              <q-btn
+                class="q-ma-xs"
+                outline
+                color="red-14"
+                icon-right="delete"
+                @click="btnDelete(props.row)"
+              />
             </q-td>
           </template>
         </q-tr>
@@ -86,6 +92,7 @@
 <script>
 import {mapGetters} from 'vuex'
 import AddEditClient from "components/AddEditClient";
+import utils from "src/helpers/utils";
 export default {
   name: 'PageIndex',
   components: {AddEditClient},
@@ -121,16 +128,34 @@ export default {
       this.clientDetailsToEdit = client
       this.AddEditClientDialog = true;
     },
+    btnDelete(client) {
+      console.log('client', client)
+      this.$q.dialog({
+        title: 'Confirm',
+        message: `Are you use you want to delete ${client['name']}?`,
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+          // delete client
+        this.$store.dispatch('clients/DELETE_CLIENT', client)
+          .then(response => {
+            this.showNotification(this, 'Client Deleted', 'primary','check_circle');
+          })
+          .catch(error => {
+            this.showNotification(this, `${error.message}`,'red-5','warning');
+          })
+      })
+    },
     closeAddEditClientDialog() {
       this.AddEditClientDialog = false;
     }
   },
   data () {
     return {
+      ...utils,
       filter: '',
       AddEditClientDialog: false,
       isEditing: false,
-      confirm: false,
       clientDetailsToEdit: []
     }
   },
@@ -149,7 +174,7 @@ export default {
           if (header !== '_id' && header !== 'date' && header !== '__v') {
             let obj1 = {
               name: header,
-              sortable: false,
+              sortable: true,
               label: header,
               field: header,
               headerClasses: 'bg-grey-3',

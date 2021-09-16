@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime()
     })
     res.status(200).json(sorted)
-  } catch (e) {
+  } catch (error) {
     res.status(500).json({success: true, message: error.message})
   }
 })
@@ -24,11 +24,14 @@ router.post('/', async (req, res) => {
 
   try{
     const provider = await newProvider.save()
-    console.log('provider at post req', provider)
-    if (!provider) throw new Error('Something went wrong saving provider')
+    if (!provider) throw Error('Something went wrong saving provider')
     res.status(200).json({success: true, provider: provider, message: 'Provider Added Success'})
-  } catch (e) {
-    res.status(500).json({success: false, error: e, errorMessage: e.message})
+  } catch (error) {
+    if (error.code === 11000){
+      res.json({success: false, error: error,  errorMessage: 'Provider Already Exists'}).status(500)
+    }else {
+      res.status(500).json({success: false, error: error, errorMessage: error.message})
+    }
   }
 })
 
