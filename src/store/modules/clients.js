@@ -52,6 +52,7 @@ const actions = {
         providers: payload.providersObject
       })
         .then(response => {
+          console.log('client store response', response)
           if (response.data.success){
             context.dispatch('FETCH_CLIENTS')
             resolve(response)
@@ -61,6 +62,11 @@ const actions = {
           }
         })
         .catch(error => {
+
+          console.log('client store error', error)
+          console.log('client store error code', error.code)
+          console.log('client store error message', error.message)
+          console.log('client store error errorMessage', error.errorMessage)
           reject(error)
         })
     })

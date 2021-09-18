@@ -257,11 +257,17 @@ export default {
               this.$store
                 .dispatch('clients/EDIT_CLIENT', this.clientForm)
                 .then(response => {
+                  console.log('client component response', response)
                   this.submitting = false;
                   this.closeAddEditClientDialog()
                   this.showNotification(this, 'Client Updated', 'primary', 'check_circle');
                 })
                 .catch(error => {
+                  console.log('client component error', error)
+                  console.log('client component error code', error.code)
+                  console.log('client component error message', error.message)
+                  console.log('client component error status', error.status)
+                  console.log('client component errorMessage', error.errorMessage)
                   this.submitting = false;
                   this.showNotification(this, `${error.message}`, 'red-5', 'error');
                 })
