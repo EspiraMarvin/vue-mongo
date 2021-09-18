@@ -29,7 +29,7 @@
         <q-btn
           label="New Client"
           color="primary"
-          class="q-ma-md text-white q-pl-md q-pr-md text-capitalize"
+          class="submit q-ma-md text-white q-pl-md q-pr-md text-capitalize"
           @click="btnAdd"
         />
       </template>

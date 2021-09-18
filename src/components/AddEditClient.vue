@@ -13,12 +13,9 @@
               outlined
               v-model="clientForm.name"
               placeholder="Name *"
-              type="text"
+              type="text" class="name"
               lazy-rules
-              :rules="[
-                val => (val && val.length > 0) || 'Name is missing',
-                hasWhiteSpacesOnly
-              ]"
+              :rules="[val => (val && val.length > 0) || 'Name is missing',hasWhiteSpacesOnly]"
             />
           </div>
           <div class="col-md-6 col-xs-12 q-pa-md">
@@ -26,7 +23,7 @@
               outlined
               v-model="clientForm.email"
               placeholder="Email *"
-              type="email"
+              type="email" class="email"
               lazy-rules
               :rules="[val => !!val || 'Email is missing', emailFormat]"
             />
@@ -39,32 +36,15 @@
                 v-model="clientForm.phone"
                 placeholder="Phone *"
                 type="number"
+                class="phone"
                 lazy-rules
                 :rules="[val => !!val || 'Phone is missing', !isEditing  ? phoneValid : '']"
               />
             </q-form>
           </div>
-        <div class="row">
-          <div class="col-md-8 col-xs-12 q-pa-md">
-            <q-input
-              outlined
-              v-model="providerForm.name"
-              placeholder="Providers *"
-              type="text"
-              lazy-rules
-            />
-          </div>
-          <div class="col-md-4 col-xs-12 q-pa-md">
-            <q-btn
-              size="md"
-              class="q-pa-sm full-width text-capitalize"
-              @click="btnAddProvider"
-              label="Add Provider"
-              :loading="submittingProviders"
-              :disable="isDisabled"
-            />
-          </div>
-        </div>
+
+<!--        add provider form-->
+         <ProviderForm />
 
         <!--    providers-->
         <div class="row">
@@ -165,11 +145,12 @@
 
 <script>
 import utils from 'src/helpers/utils';
-import {cloneDeep, isEqual} from 'lodash'
+import {cloneDeep} from 'lodash'
 import EditProvider from "components/EditProvider";
+import ProviderForm from "components/ProviderForm";
 export default {
   name: 'AddEditClient',
-  components: {EditProvider},
+  components: {ProviderForm, EditProvider},
   props: {
     isEditing: {
       type: Boolean,
@@ -198,48 +179,25 @@ export default {
         phone: '',
         providers: []
       },
-      providerForm: {
-        name: ''
-      },
       providerFilter: '',
       providerDetailsToEdit: {},
       AddEditProviderDialog: false,
-      submitting: false,
-      submittingProviders: false
+      submitting: false
     };
   },
   mounted() {
     this.populateForm();
   },
   computed: {
-    isDisabled() {
-      return !this.providerForm.name.replace(/\s/g, '').length
-    },
     providerResultsQuery () {
       if (this.providerFilter) {
-        console.log('result query search', this.providerFilter)
-        return this.providers.filter((provider) => {
-          return this.providerFilter.toLowerCase().split(' ').every(v => provider.name.toLowerCase().includes(v))
-        })
+        return this.providers.filter(provider => this.providerFilter.toLowerCase().split(' ').every(v => provider.name.toLowerCase().includes(v)))
       } else {
         return this.providers
       }
     }
   },
   methods: {
-    btnAddProvider() {
-      this.submittingProviders = true
-        this.$store.dispatch('providers/ADD_PROVIDER', this.providerForm)
-          .then(response => {
-            this.submittingProviders = false
-              this.providerForm.name = ''
-              this.showNotification(this, 'Provider Added', 'primary','check_circle');
-          })
-          .catch((error) => {
-            this.submittingProviders = false
-            this.showNotification(this, `${error}`, 'red-5','error');
-          })
-    },
     btnEditProvider(provider) {
       this.AddEditProviderDialog = true
       this.providerDetailsToEdit = provider
@@ -261,8 +219,6 @@ export default {
                 })
                 .catch(error => {
                   this.submitting = false;
-                  console.log('edit error at addedit component', error)
-                  console.log('edit error response at addedit component', error.response)
                   this.showErrorNotification(this, error)
                 })
             } else {
@@ -297,7 +253,6 @@ export default {
             .then(response => this.showNotification(this, 'Provider Deleted', 'primary','check_circle'))
             .catch(error => this.showNotification(this, `${error.message}`,'red-5','warning'))
         }else {
-          // delete client
           this.$store.dispatch('clients/DELETE_CLIENT', item)
             .then(response => {
               this.closeAddEditClientDialog()

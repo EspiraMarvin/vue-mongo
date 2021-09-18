@@ -14,7 +14,47 @@ describe('Landing', () => {
   it('.should() - assert that <title> is correct', () => {
     cy.title().should('include', 'Quasar');
   });
+
+  // it('should have list of clients as title', function () {
+  //   cy.title().should('include', 'List of clients')
+  // });
+  // it('.should() - assert that <div> is correct', () => {
+  //   cy.title().should('include', ' List of clients');
+  // });
 });
+
+describe('Client Resource', () => {
+  it('Creating a New Client', () => {
+    cy.visit('/')
+
+    // cy.get('.name') // 2.
+    //   .type('My First Post') // 3.
+    //
+    // cy.get('input.post-body') // 4.
+    //   .type('Hello, world!') // 5.
+
+    cy.get('.submit')
+      .click()
+
+    cy.get('.name')
+      .type('My First Post')
+
+    cy.get('.email')
+      .type('morgan@gmail.com')
+
+    cy.get('.phone')
+      .type('8175698906')
+
+    // cy.contains('submit') // 6.
+    //   .click() // 7.
+
+    // cy.url() // 8.
+    //   .should('include', '/posts/my-first-post')
+    //
+    // cy.get('h1') // 9.
+    //   .should('contain', 'My First Post')
+  })
+})
 
 // ** The following code is an example to show you how to write some tests for your home page **
 //
