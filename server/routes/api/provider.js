@@ -33,7 +33,7 @@ const router = Router()
  * @swagger
  * /api/provider:
  *  get:
- *    summary: Returns the list of all the clients
+ *    summary: Returns the list of all the providers
  *    tags: [Providers]
  *    responses:
  *      200:
@@ -44,15 +44,15 @@ const router = Router()
  *              type: array
  *              items:
  *                $ref: '#/components/schemas/Provider'
- *
- *
+ *      404:
+ *        description: Providers Not Found
  */
 
 // get request
 router.get('/', async (req, res) => {
   try {
     const providers = await Provider.find()
-    if (!providers) throw new Error('Provider Not Found')
+    if (!providers) throw new Error('Providers Not Found')
     // if (!providers) return res.status(404).json({success: false, message: 'Provider not found'})
     const sorted = providers.sort((a, b) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -96,8 +96,8 @@ router.get('/:id', async (req, res) => {
     if (!response) throw Error('Something went wrong')
     const updated = { ...response._doc, ...req.body }
     res.status(200).json(updated)
-  } catch (e) {
-    res.status(404).json({success: true, message: error.message})
+  } catch (error) {
+    res.status(404).json({success: false, error: error, errorMessage: error.message})
   }
 })
 
@@ -136,9 +136,9 @@ router.post('/', async (req, res) => {
     res.status(200).json({success: true, provider: provider, message: 'Provider Added Success'})
   } catch (error) {
     if (error.code === 11000){
-      res.json({success: false, error: error,  errorMessage: 'Provider Already Exists'}).status(500)
+      res.status(400).json({success: false, error: error,  errorMessage: 'Provider Already Exists'})
     }else {
-      res.status(500).json({success: false, error: error, errorMessage: error.message})
+        res.status(500).json({success: false, error: error})
     }
   }
 })
@@ -172,7 +172,7 @@ router.post('/', async (req, res) => {
  *      404:
  *        description: The provider was not found
  *      500:
- *        description: Some error happened
+ *        description: Server error occurred
  */
 
 // edit request
@@ -183,8 +183,13 @@ router.put('/:id', async (req, res) => {
     if (!response) throw Error('Something went wrong')
     const updated = { ...response._doc, ...req.body }
     res.status(200).json(updated)
-  } catch (e) {
-    res.status(500).json({success: false, errorMessage: e.message})
+  } catch (error) {
+    // res.status(500).json({success: false, errorMessage: e.message})
+    if (error.code === 11000){
+      res.status(400).json({success: false, error: error,  errorMessage: 'Provider Already Exists'})
+    }else {
+      res.status(500).json({success: false, error: error})
+    }
   }
 })
 
@@ -213,10 +218,10 @@ router.delete('/:id', async (req, res) => {
   const { id } = req.params
   try {
     const removed = await Provider.findByIdAndDelete(id)
-    if (!removed) throw Error('Something went wrong')
+    if (!removed) throw Error('Something went wrong. Provider could not be found')
     res.status(200).json(removed)
-  } catch (e) {
-    res.status(500).json({ message: error.message })
+  } catch (error) {
+    res.status(404).json({ errorMessage: error.message })
   }
 })
 

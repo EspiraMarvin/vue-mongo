@@ -77,8 +77,7 @@
                  debounce="1000"
                  v-model="providerFilter"
                  placeholder="Search..."
-                 class="q-ma-sm"
-                 clearable
+                 class="q-ma-sm" clearable
                >
                  <template v-slot:prepend>
                    <q-icon name="search" />
@@ -161,7 +160,6 @@
       :confirm="confirm"
     />
   </q-dialog>
-
   </div>
 </template>
 
@@ -257,19 +255,15 @@ export default {
               this.$store
                 .dispatch('clients/EDIT_CLIENT', this.clientForm)
                 .then(response => {
-                  console.log('client component response', response)
                   this.submitting = false;
                   this.closeAddEditClientDialog()
                   this.showNotification(this, 'Client Updated', 'primary', 'check_circle');
                 })
                 .catch(error => {
-                  console.log('client component error', error)
-                  console.log('client component error code', error.code)
-                  console.log('client component error message', error.message)
-                  console.log('client component error status', error.status)
-                  console.log('client component errorMessage', error.errorMessage)
                   this.submitting = false;
-                  this.showNotification(this, `${error.message}`, 'red-5', 'error');
+                  console.log('edit error at addedit component', error)
+                  console.log('edit error response at addedit component', error.response)
+                  this.showErrorNotification(this, error)
                 })
             } else {
               this.$store
@@ -281,7 +275,7 @@ export default {
                 })
                 .catch(error => {
                   this.submitting = false;
-                  this.showNotification(this, `${error}`, 'red-5', 'error');
+                  this.showErrorNotification(this, error)
                 });
             }
           } else {
@@ -300,12 +294,8 @@ export default {
         if (!item['email']){
           // delete provider
           this.$store.dispatch('providers/DELETE_PROVIDER', item)
-            .then(response => {
-              this.showNotification(this, 'Provider Deleted', 'primary','check_circle');
-            })
-            .catch(error => {
-              this.showNotification(this, `${error.message}`,'red-5','warning');
-            })
+            .then(response => this.showNotification(this, 'Provider Deleted', 'primary','check_circle'))
+            .catch(error => this.showNotification(this, `${error.message}`,'red-5','warning'))
         }else {
           // delete client
           this.$store.dispatch('clients/DELETE_CLIENT', item)
@@ -313,9 +303,7 @@ export default {
               this.closeAddEditClientDialog()
               this.showNotification(this, 'Client Deleted', 'primary','check_circle');
             })
-            .catch(error => {
-              this.showNotification(this, `${error.message}`,'red-5','warning');
-            })
+            .catch(error => this.showNotification(this, `${error.message}`,'red-5','warning'))
         }
       })
     },

@@ -52,23 +52,10 @@ const actions = {
         providers: payload.providersObject
       })
         .then(response => {
-          console.log('client store response', response)
-          if (response.data.success){
             context.dispatch('FETCH_CLIENTS')
             resolve(response)
-          }else if (response.data['error'].code === 11000){
-            const error = 'The Client Already Exists'
-            reject(error)
-          }
         })
-        .catch(error => {
-
-          console.log('client store error', error)
-          console.log('client store error code', error.code)
-          console.log('client store error message', error.message)
-          console.log('client store error errorMessage', error.errorMessage)
-          reject(error)
-        })
+        .catch(error => reject(error))
     })
   },
   EDIT_CLIENT(context, payload) {

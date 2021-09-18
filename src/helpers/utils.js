@@ -37,11 +37,45 @@ const showNotification = function(vm, message, color, icon , position = 'top-rig
   });
 };
 
+
+const showErrorNotification = function(vm, error) {
+  let errorMessage;
+    if (error.response && error.response['data'].errorMessage) {
+      errorMessage = error.response['data'].errorMessage
+    }else if (error.message) {
+      errorMessage = error.message
+    }else {
+      errorMessage = error
+  }
+    vm.$q.notify({
+      message: errorMessage,
+      color: 'red-5',
+      icon: 'error',
+      position: 'top-right'
+  });
+};
+
+const prepareErrorMessage = function(
+  error,
+  message = 'Sorry! An error occurred, please try again shortly'
+) {
+  message = error.message ? error.message : message; // in case of network error, this is picked
+
+  if (error.response && error.response.data && error.response.data.message) {
+    // this picks error response from backend
+    message = error.response.data.message;
+  }
+
+  return message;
+};
+
 export default {
   formatString,
   hasWhiteSpacesOnly,
   phoneValid,
+  emailFormat,
+  prepareErrorMessage,
   showNotification,
-  emailFormat
+  showErrorNotification
 }
 

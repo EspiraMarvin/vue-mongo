@@ -18,7 +18,7 @@
           borderless
           debounce="1000"
           v-model="filter"
-          placeholder="Search..."
+          placeholder="Search Clients"
           class="q-ma-sm"
           clearable
         >

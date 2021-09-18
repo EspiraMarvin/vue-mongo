@@ -66,9 +66,7 @@ name: "EditProvider",
         this.closeEditProviderDialog()
         this.showNotification(this, 'Provider Updated', 'primary','check_circle');
       })
-      .catch(error =>  {
-        this.showNotification(this, `${error.message}`,'red-5', 'error');
-      })
+      .catch(error => this.showErrorNotification(this, error))
     },
     populateProviderForm() {
       const providerClone = cloneDeep(this.providerDetailsToEdit)

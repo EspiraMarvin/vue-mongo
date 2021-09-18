@@ -59,7 +59,8 @@ const router = Router()
  *              type: array
  *              items:
  *                $ref: '#/components/schemas/Client'
- *
+ *      404:
+ *        description: Clients Not Found
  *
  */
 
@@ -71,8 +72,8 @@ router.get('/', async (req, res) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime()
     })
     res.status(200).json(sorted)
-  } catch (e) {
-    res.status(500).json({success: true, message: e.message})
+  } catch (error) {
+    res.status(404).json({success: true, message: error.message})
   }
 })
 
@@ -109,8 +110,8 @@ router.get('/:id', async (req, res) => {
     if (!response) throw Error('Something went wrong')
     const updated = { ...response._doc, ...req.body }
     res.status(200).json(updated)
-  } catch (e) {
-    res.status(404).json({success: false, error: e, errorCode: e.code, errorMessage: e.message})
+  } catch (error) {
+    res.status(404).json({success: false, error: error,  errorMessage: error.message})
   }
 })
 
@@ -141,21 +142,16 @@ router.get('/:id', async (req, res) => {
 
 // post request
 router.post('/', async (req, res) => {
-  console.log('post request')
   const newClient = new Client(req.body)
-  console.log('newClient request', newClient)
   try{
     const client = await newClient.save()
-    console.log('client at post req', client)
     if (!client) throw new Error('Something went wrong saving client')
     res.status(200).json({success: true, client: client, message: 'Client Added Success'})
   } catch (error) {
     if (error.code === 11000){
-      res.status(400).json({success: false, error: error,  errorMessage: 'Client Already Exists'})
-      // res.json({success: false, error: error,  errorMessage: 'Client Already Exists'}).status(400)
+      res.status(400).json({success: false, error: error,  errorMessage: 'Client with this Email Already Exists'})
     }else {
-      res.status(500).json({success: false, error: error, errorMessage: error.message})
-      // res.status(500).json({success: false, error: error, errorCode: error.code, errorMessage: error.message})
+      res.status(500).json({success: false, error: error})
     }
   }
 })
@@ -186,10 +182,10 @@ router.post('/', async (req, res) => {
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/Client'
- *      404:
- *        description: The client was not found
+ *      400:
+ *        description: The client with this email already exists
  *      500:
- *        description: Some error happened
+ *        description: Server error occurred
  */
 
 // edit request
@@ -200,8 +196,12 @@ router.put('/:id', async (req, res) => {
     if (!response) throw Error('Something went wrong')
     const updated = { ...response._doc, ...req.body }
     res.status(200).json(updated)
-  } catch (e) {
-    res.status(500).json({success: false, error: e, errorCode: e.code, errorMessage: e.message})
+  } catch (error) {
+    if (error.code === 11000){
+      res.status(400).json({success: false, error: error,  errorMessage: 'Client with this Email Already Exists'})
+    }else {
+      res.status(500).json({success: false, error: error})
+    }
   }
 })
 
@@ -231,10 +231,10 @@ router.delete('/:id', async (req, res) => {
   const { id } = req.params
   try {
     const removed = await Client.findByIdAndDelete(id)
-    if (!removed) throw Error('Something went wrong')
+    if (!removed) throw Error('Something went wrong. Client could not be found')
     res.status(200).json(removed)
-  } catch (e) {
-    res.status(500).json({ message: e.message })
+  } catch (error) {
+    res.status(404).json({ errorMessage: error.message })
   }
 })
 
