@@ -3,7 +3,37 @@ const Client = require('../../models/Client')
 
 const router = Router()
 
-// get request
+/**
+* @swagger
+* components:
+*   schemas:
+*     Client:
+*       type: object
+*       required:
+*         - name
+*         - email
+*         - phone
+*         - providers
+*       properties:
+*         id:
+*           type: string
+*           description: The auto-generated id of the client
+*         name:
+*           type: string
+*           description: The client name
+*         phone:
+*           type: integer
+*           description: client phone number
+*         providers:
+*           type: array
+*           description: The client's providers
+*       example:
+*         id: 2e34wrf7
+*         name: client one
+*         phone: 8175698909
+*         providers: [ { id: skdfsdf }, { id: ksdzkw43} ]
+*/
+
 router.get('/', async (req, res) => {
   try {
     const clients = await Client.find()

@@ -59,14 +59,14 @@
             <q-td v-if="col.name === 'actions'" :key="col.name" class="text-center">
               <q-btn
                 class="q-ma-xs"
-                outline
+                outline size="sm"
                 color="primary"
                 icon-right="edit"
                 @click="btnEdit(props.row)"
                />
               <q-btn
                 class="q-ma-xs"
-                outline
+                outline size="sm"
                 color="red-14"
                 icon-right="delete"
                 @click="btnDelete(props.row)"
@@ -99,6 +99,15 @@ export default {
   mounted() {
     this.$store.dispatch('providers/FETCH_PROVIDERS')
     this.$store.dispatch('clients/FETCH_CLIENTS')
+  },
+  data () {
+    return {
+      ...utils,
+      filter: '',
+      AddEditClientDialog: false,
+      isEditing: false,
+      clientDetailsToEdit: []
+    }
   },
   methods: {
     getNames(clientProvidersArray) {
@@ -148,15 +157,6 @@ export default {
     },
     closeAddEditClientDialog() {
       this.AddEditClientDialog = false;
-    }
-  },
-  data () {
-    return {
-      ...utils,
-      filter: '',
-      AddEditClientDialog: false,
-      isEditing: false,
-      clientDetailsToEdit: []
     }
   },
   computed: {

@@ -40,7 +40,7 @@
                 placeholder="Phone *"
                 type="number"
                 lazy-rules
-                :rules="[val => !!val || 'Phone is missing', phoneValid]"
+                :rules="[val => !!val || 'Phone is missing', !isEditing  ? phoneValid : '']"
               />
             </q-form>
           </div>
@@ -71,8 +71,22 @@
          <div class="col-md-8 col-xs-12 q-pa-md">
            <q-card>
              <q-scroll-area class="full-width" style="height: 200px">
+               <q-input
+                 dense
+                 borderless
+                 debounce="1000"
+                 v-model="providerFilter"
+                 placeholder="Search..."
+                 class="q-ma-sm"
+                 clearable
+               >
+                 <template v-slot:prepend>
+                   <q-icon name="search" />
+                 </template>
+               </q-input>
+               <q-separator />
                <q-list>
-                  <q-item v-for="provider in providers" :key="provider._id">
+                  <q-item v-for="provider in providerResultsQuery" :key="provider._id">
                   <q-item-section>
                     <q-checkbox
                       v-model="clientForm.providers" :val="provider._id" :label="provider.name" color="primary" class="text-capitalize"
@@ -123,17 +137,12 @@
       <q-space />
     <q-card-actions align="right">
       <q-btn
-        size="md"
-        class="q-pl-md q-pr-md q-mr-md text-black text-capitalize"
-        label="Cancel"
-        v-close-popup
+        class="q-pl-md q-pr-md q-mr-md text-black text-capitalize" size="md"
+        label="Cancel" v-close-popup
       />
       <q-btn
-        size="md"
-        class="q-pl-md q-pr-md text-capitalize"
-        :loading="submitting"
-        :disable="submitting"
-        @click="btnSave"
+        class="q-pl-md q-pr-md text-capitalize" size="md"
+        :loading="submitting" :disable="submitting" @click="btnSave"
         :label="isEditing ? 'Save Client' : 'Add Client'"
       >
         <template v-slot:loading>
@@ -194,7 +203,7 @@ export default {
       providerForm: {
         name: ''
       },
-      isEqual: isEqual,
+      providerFilter: '',
       providerDetailsToEdit: {},
       AddEditProviderDialog: false,
       submitting: false,
@@ -207,6 +216,16 @@ export default {
   computed: {
     isDisabled() {
       return !this.providerForm.name.replace(/\s/g, '').length
+    },
+    providerResultsQuery () {
+      if (this.providerFilter) {
+        console.log('result query search', this.providerFilter)
+        return this.providers.filter((provider) => {
+          return this.providerFilter.toLowerCase().split(' ').every(v => provider.name.toLowerCase().includes(v))
+        })
+      } else {
+        return this.providers
+      }
     }
   },
   methods: {
@@ -232,37 +251,36 @@ export default {
     },
     btnSave() {
       this.$refs.clientForm.validate().then(success => {
-        if (success) {
-          this.submitting = true;
-          if (this.isEditing) {
-            this.$store
-              .dispatch('clients/EDIT_CLIENT', this.clientForm)
-              .then(response => {
-                this.submitting = false;
-                this.closeAddEditClientDialog()
-                this.showNotification(this, 'Client Updated', 'primary','check_circle');
-              })
-              .catch(error => {
-                this.submitting = false;
-                this.showNotification(this, `${error.message}`, 'red-5','error');
-              });
+          if (success) {
+            this.submitting = true;
+            if (this.isEditing) {
+              this.$store
+                .dispatch('clients/EDIT_CLIENT', this.clientForm)
+                .then(response => {
+                  this.submitting = false;
+                  this.closeAddEditClientDialog()
+                  this.showNotification(this, 'Client Updated', 'primary', 'check_circle');
+                })
+                .catch(error => {
+                  this.submitting = false;
+                  this.showNotification(this, `${error.message}`, 'red-5', 'error');
+                })
+            } else {
+              this.$store
+                .dispatch('clients/ADD_CLIENT', this.clientForm)
+                .then(response => {
+                  this.submitting = false;
+                  this.closeAddEditClientDialog()
+                  this.showNotification(this, 'Client Added', 'primary', 'check_circle');
+                })
+                .catch(error => {
+                  this.submitting = false;
+                  this.showNotification(this, `${error}`, 'red-5', 'error');
+                });
+            }
           } else {
-            this.$store
-              .dispatch('clients/ADD_CLIENT', this.clientForm)
-              .then(response => {
-                console.log('add client responseeeeeeeeeee', response)
-                this.submitting = false;
-                this.closeAddEditClientDialog()
-                this.showNotification(this, 'Client Added', 'primary','check_circle');
-              })
-              .catch(error => {
-                this.submitting = false;
-                this.showNotification(this, `${error}`, 'red-5','error');
-              });
+            this.showNotification(this, 'Please fill the fields', 'red-5', 'warning');
           }
-        } else {
-          this.showNotification(this, 'Please fill the fields','red-5','warning');
-        }
       });
     },
     confirm (item) {
@@ -271,8 +289,7 @@ export default {
       this.$q.dialog({
         title: 'Confirm',
         message: `Are you use you want to delete ${itemTitle}?`,
-        cancel: true,
-        persistent: true
+        cancel: true, persistent: true
       }).onOk(() => {
         if (!item['email']){
           // delete provider
