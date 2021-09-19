@@ -1,26 +1,23 @@
-# Front-End with Vuejs & Quasar Components (app)
+  # Back-End with Expressjs & MongoDB Mongoose (api)
 
-A Quasar Framework app
+An Express Framework api
 
 ## Install the dependencies
 ```bash
-yarn
+yarn install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Start the api server in development mode
 ```bash
-quasar dev
+yarn server
 ```
 
-### Lint the files
+### Visit the URL [localhost:4000](http://localhost:4000)
+
+
+### To view the API Documentation visit this link the app for production [Protranslating API Docs]('http://localhost:4000/api-docs/')
+
 ```bash
-yarn run lint
+http://localhost:4000/api-docs/
 ```
 
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://v1.quasar.dev/quasar-cli/quasar-conf-js).
