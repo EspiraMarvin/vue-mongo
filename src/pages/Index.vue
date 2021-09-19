@@ -146,12 +146,8 @@ export default {
       }).onOk(() => {
           // delete client
         this.$store.dispatch('clients/DELETE_CLIENT', client)
-          .then(response => {
-            this.showNotification(this, 'Client Deleted', 'primary','check_circle');
-          })
-          .catch(error => {
-            this.showNotification(this, `${error.message}`,'red-5','warning');
-          })
+          .then(response => this.showNotification(this, 'Client Deleted', 'primary','check_circle'))
+          .catch(error => this.showNotification(this, `${error.message}`,'red-5','warning'))
       })
     },
     closeAddEditClientDialog() {

@@ -240,7 +240,6 @@ export default {
       this.$q.dialog({
         title: 'Confirm',
         message: `Are you use you want to delete ${itemTitle}?`,
-        class: 'confirm-delete',
         cancel: true, persistent: true
       }).onOk(() => {
         if (!item['email']){
@@ -253,8 +252,7 @@ export default {
             .then(response => {
               this.closeAddEditClientDialog()
               this.showNotification(this, 'Client Deleted', 'primary','check_circle');
-            })
-            .catch(error => this.showNotification(this, `${error.message}`,'red-5','warning'))
+            }).catch(error => this.showNotification(this, `${error.message}`,'red-5','warning'))
         }
       })
     },
