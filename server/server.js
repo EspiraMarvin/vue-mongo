@@ -29,10 +29,8 @@ const swaggerOptions = {
       }
     ]
   },
-  // apis: ["server.js"]
   apis: ["routes/api/*.js"]
 }
-console.log('swaggerOptions',swaggerOptions)
 
 const specs = swaggerJSDoc(swaggerOptions)
 
