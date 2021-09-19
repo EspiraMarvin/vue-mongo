@@ -84,6 +84,17 @@ yarn install
 ```bash
 yarn server
 ```
+### Add .env file in the `server` folder
+
+```bash
+server/.env
+```
+
+### Add the `MONGO_URI` variable I have provider in the `.env` file like below:
+
+```bash
+MONGO_URI = "the mongo uri"
+```
 
 ### Visit the URL [localhost:4000](http://localhost:4000)
 

@@ -3,9 +3,22 @@
 An Express Framework api
 
 ## Install the dependencies
+
 ```bash
 yarn install
 ```
+### Add .env file in the `server` folder
+
+```bash
+server/.env
+```
+
+### Add the `MONGO_URI` variable I have provider in the `.env` file like below:
+
+```bash
+MONGO_URI = "the mongo uri"
+```
+
 
 ### Start the api server in development mode
 ```bash
