@@ -24,7 +24,10 @@ npm install -g @quasar/cli
 In your folder workspace
 ### 1. git clone [https://github.com/EspiraMarvin/vue-mongo]('https://github.com/EspiraMarvin/vue-mongo')
 
-### 2. In the folder you clone, open your editor of choice and
+### 2. Navigate to your repo folder
+```bash
+cd vue-mongo
+```
 
 ## Install the dependencies
 ```bash
@@ -67,7 +70,13 @@ yarn build
 
 An Express Framework api
 
+### Navigate to the server folder
 
+```bash
+cd vue-mongo
+
+cd server
+```
 ## Install the dependencies
 
 ```bash
