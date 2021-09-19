@@ -7,54 +7,35 @@
 // ** This file is an example of how to write Cypress tests, you can safely delete it **
 
 // This test will pass when run against a clean Quasar project
-describe('Landing', () => {
+describe('Initial landing page', () => {
   beforeEach(() => {
     cy.visit('/');
   });
+
   it('.should() - assert that <title> is correct', () => {
     cy.title().should('include', 'Quasar');
   });
 
-  // it('should have list of clients as title', function () {
-  //   cy.title().should('include', 'List of clients')
-  // });
-  // it('.should() - assert that <div> is correct', () => {
-  //   cy.title().should('include', ' List of clients');
-  // });
+
+  it('should have a title', function () {
+    cy.get('h6').should('contain', 'List of clients')
+  });
+
+  it('should have table with Clients title', function () {
+    cy.get('.table').should('contain', 'Clients')
+  });
+
+  it('should have a search client input field', function () {
+    cy.get('.search')
+
+  });  it('should have a add client button', function () {
+    cy.get('.add-client')
+  });
+
 });
 
-describe('Client Resource', () => {
-  it('Creating a New Client', () => {
-    cy.visit('/')
 
-    // cy.get('.name') // 2.
-    //   .type('My First Post') // 3.
-    //
-    // cy.get('input.post-body') // 4.
-    //   .type('Hello, world!') // 5.
 
-    cy.get('.submit')
-      .click()
-
-    cy.get('.name')
-      .type('My First Post')
-
-    cy.get('.email')
-      .type('morgan@gmail.com')
-
-    cy.get('.phone')
-      .type('8175698906')
-
-    // cy.contains('submit') // 6.
-    //   .click() // 7.
-
-    // cy.url() // 8.
-    //   .should('include', '/posts/my-first-post')
-    //
-    // cy.get('h1') // 9.
-    //   .should('contain', 'My First Post')
-  })
-})
 
 // ** The following code is an example to show you how to write some tests for your home page **
 //

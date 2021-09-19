@@ -2,7 +2,7 @@
   <div style="width: 800px; max-width: 350vw;">
   <q-card>
     <q-toolbar>
-      <q-toolbar-title class="text-primary">{{ isEditing ? 'Edit Client' : 'Add Client' }}</q-toolbar-title>
+      <q-toolbar-title class="text-primary toolbar-title">{{ isEditing ? 'Edit Client' : 'Add Client' }}</q-toolbar-title>
     </q-toolbar>
     <q-separator />
     <q-card-section>
@@ -46,7 +46,7 @@
 <!--        add provider form-->
          <ProviderForm />
 
-        <!--    providers-->
+        <!--    providers list-->
         <div class="row">
          <div class="col-md-8 col-xs-12 q-pa-md">
            <q-card>
@@ -64,17 +64,17 @@
                  </template>
                </q-input>
                <q-separator />
-               <q-list>
-                  <q-item v-for="provider in providerResultsQuery" :key="provider._id">
+               <q-list class="providers-list">
+                  <q-item v-for="provider in providerResultsQuery" :key="provider._id" class="checkbox">
                   <q-item-section>
                     <q-checkbox
-                      v-model="clientForm.providers" :val="provider._id" :label="provider.name" color="primary" class="text-capitalize"
+                      v-model="clientForm.providers" :val="provider._id" :label="provider.name" color="primary" class="checkbox-two text-capitalize"
                     />
                   </q-item-section>
                     <q-item-section class="text-right">
                       <span>
                         <q-btn
-                          class="q-ma-xs"
+                          class="q-ma-xs edit-provider"
                           outline
                           size="sm"
                          color="positive"
@@ -82,7 +82,7 @@
                           @click="btnEditProvider(provider) === true"
                          />
                         <q-btn
-                          class="q-ma-xs"
+                          class="q-ma-xs delete-provider"
                          outline
                           size="sm"
                           @click="confirm(provider)"
@@ -116,11 +116,11 @@
       <q-space />
     <q-card-actions align="right">
       <q-btn
-        class="q-pl-md q-pr-md q-mr-md text-black text-capitalize" size="md"
+        class="close-client q-pl-md q-pr-md q-mr-md text-black text-capitalize" size="md"
         label="Cancel" v-close-popup
       />
       <q-btn
-        class="q-pl-md q-pr-md text-capitalize" size="md"
+        class="submit-client q-pl-md q-pr-md text-capitalize" size="md"
         :loading="submitting" :disable="submitting" @click="btnSave"
         :label="isEditing ? 'Save Client' : 'Add Client'"
       >
@@ -136,8 +136,6 @@
     <EditProvider
       :providerDetailsToEdit="providerDetailsToEdit"
       :closeEditProviderDialog="closeEditProviderDialog"
-      :closeAddEditClientDialog="closeAddEditClientDialog"
-      :confirm="confirm"
     />
   </q-dialog>
   </div>
@@ -147,7 +145,7 @@
 import utils from 'src/helpers/utils';
 import {cloneDeep} from 'lodash'
 import EditProvider from "components/EditProvider";
-import ProviderForm from "components/ProviderForm";
+import ProviderForm from "components/AddProvider";
 export default {
   name: 'AddEditClient',
   components: {ProviderForm, EditProvider},
@@ -159,7 +157,6 @@ export default {
     clientDetailsToEdit: {
       type: Object,
       required: false,
-      default: () => {}
     },
     providers: {
       type: Array,
@@ -190,11 +187,9 @@ export default {
   },
   computed: {
     providerResultsQuery () {
-      if (this.providerFilter) {
-        return this.providers.filter(provider => this.providerFilter.toLowerCase().split(' ').every(v => provider.name.toLowerCase().includes(v)))
-      } else {
-        return this.providers
-      }
+     return this.providerFilter ?
+       this.providers.filter(provider => this.providerFilter.toLowerCase().split(' ').every(v => provider.name.toLowerCase().includes(v)))
+       : this.providers
     }
   },
   methods: {
@@ -237,7 +232,7 @@ export default {
           } else {
             this.showNotification(this, 'Please fill the fields', 'red-5', 'warning');
           }
-      });
+      })
     },
     confirm (item) {
       item = item['name'] ? item : item = this.clientForm

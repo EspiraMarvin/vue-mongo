@@ -5,11 +5,12 @@
       </q-card-section>
       <q-separator />
       <q-card-section class="q-pt-none">
-        <q-form ref="providerForm">
+        <q-form ref="providerForm" class="provider-form">
           <div class="row">
             <div class="col-12 q-pa-md">
               <q-input
                 outlined
+                class="provider-edit-input"
                 v-model="providerForm.name"
                 placeholder="Name *"
                 type="text"

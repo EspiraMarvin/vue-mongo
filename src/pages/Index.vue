@@ -1,25 +1,24 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h5 q-ma-md">
+    <h6 class="q-ma-md title">
       List of clients
-    </div>
+    </h6>
     <q-table
       title="Clients"
       :data="clientsResults"
       :columns="tableHeaders"
       :loading="fetchingClients"
       :filter="filter"
-      color="primary"
+      color="primary" class="table"
       row-key="_id"
     >
       <template v-slot:top-right>
         <q-input
-          dense
-          borderless
+          dense borderless
           debounce="1000"
           v-model="filter"
-          placeholder="Search Clients"
-          class="q-ma-sm"
+          placeholder="Search.."
+          class="q-ma-sm search"
           clearable
         >
           <template v-slot:prepend>
@@ -29,7 +28,7 @@
         <q-btn
           label="New Client"
           color="primary"
-          class="submit q-ma-md text-white q-pl-md q-pr-md text-capitalize"
+          class="add-client q-ma-md text-white q-pl-md q-pr-md text-capitalize"
           @click="btnAdd"
         />
       </template>

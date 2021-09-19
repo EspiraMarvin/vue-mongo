@@ -2,6 +2,7 @@
   <div class="row">
     <div class="col-md-8 col-xs-12 q-pa-md">
       <q-input
+        class="provider-add-input"
         outlined
         v-model="providerForm.name"
         placeholder="Providers *"
@@ -12,7 +13,7 @@
     <div class="col-md-4 col-xs-12 q-pa-md">
       <q-btn
         size="md"
-        class="q-pa-sm full-width text-capitalize"
+        class="q-pa-sm full-width text-capitalize add-provider"
         @click="btnAddProvider"
         label="Add Provider"
         :loading="submittingProviders"
@@ -25,7 +26,7 @@
 <script>
 import utils from "src/helpers/utils";
 export default {
-name: "ProviderForm",
+name: "AddProvider",
   data(){
     return {
       ...utils,
@@ -44,7 +45,8 @@ name: "ProviderForm",
   methods: {
     btnAddProvider() {
       this.submittingProviders = true
-      this.$store.dispatch('providers/ADD_PROVIDER', this.providerForm)
+      this.providerForm.name.toLowerCase()
+      this.$store.dispatch('providers/ADD_PROVIDER', this.providerForm.name.toLowerCase())
         .then(response => {
           this.submittingProviders = false
           this.providerForm.name = ''
