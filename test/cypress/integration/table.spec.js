@@ -7,7 +7,7 @@
 // ** This file is an example of how to write Cypress tests, you can safely delete it **
 
 // This test will pass when run against a clean Quasar project
-describe('Initial landing page', () => {
+describe('Initial landing page with table', () => {
   beforeEach(() => {
     cy.visit('/');
   });

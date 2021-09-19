@@ -9,21 +9,30 @@ describe('Add Providers Component', () => {
       .last().click()
 
     cy.get('.provider-edit-input')
-      .invoke('val')
-      .then(value => assert.isTrue(!value));
+      .not('')
+  });
+
+  it('should edit last provider to be "provider 07', function () {
+    cy.visit('/')
+
+    cy.get('.add-client')
+      .click()
+
+    cy.get('.edit-provider')
+      .last().click()
 
     cy.get('.provider-edit-input')
       .clear()
 
     cy.get('.provider-edit-input')
-      .type('provider 07')
+      .type('provider 08')
 
     cy.get('.update-provider')
       .click()
 
     setTimeout(() => {
       cy.get('.providers-list')
-        .should('contain', 'provider 07')
+        .should('contain', 'provider 08')
     }, 3000)
 
   });
