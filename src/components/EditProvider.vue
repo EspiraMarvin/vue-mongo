@@ -27,7 +27,7 @@
       <q-separator />
       <q-card-actions align="right" class="bg-white text-black">
         <q-btn class="q-px-md" label="cancel" v-close-popup />
-        <q-btn class="q-px-md" label="update" @click="btnSaveEditedProvider" />
+        <q-btn class="q-px-md update-provider" label="update" @click="btnSaveEditedProvider" />
       </q-card-actions>
     </q-card>
 </template>

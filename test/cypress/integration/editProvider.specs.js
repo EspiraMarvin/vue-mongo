@@ -6,11 +6,25 @@ describe('Add Providers Component', () => {
       .click()
 
     cy.get('.edit-provider')
-      .first().click()
+      .last().click()
 
     cy.get('.provider-edit-input')
       .invoke('val')
       .then(value => assert.isTrue(!value));
+
+    cy.get('.provider-edit-input')
+      .clear()
+
+    cy.get('.provider-edit-input')
+      .type('provider 07')
+
+    cy.get('.update-provider')
+      .click()
+
+    setTimeout(() => {
+      cy.get('.providers-list')
+        .should('contain', 'provider 07')
+    }, 3000)
 
   });
 });
