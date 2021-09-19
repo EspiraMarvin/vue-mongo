@@ -80,10 +80,6 @@ cd server
 yarn install
 ```
 
-### Start the api server in development mode
-```bash
-yarn server
-```
 ### Add .env file in the `server` folder
 
 ```bash
@@ -94,6 +90,11 @@ server/.env
 
 ```bash
 MONGO_URI = "the mongo uri"
+```
+
+### Start the api server in development mode
+```bash
+yarn server
 ```
 
 ### Visit the URL [localhost:4000](http://localhost:4000)
