@@ -65,10 +65,10 @@
                </q-input>
                <q-separator />
                <q-list class="providers-list">
-                  <q-item v-for="provider in providerResultsQuery" :key="provider._id" class="checkbox">
+                  <q-item v-for="provider in providerResultsQuery" :key="provider._id">
                   <q-item-section>
                     <q-checkbox
-                      v-model="clientForm.providers" :val="provider._id" :label="provider.name" color="primary" class="checkbox-two text-capitalize"
+                      v-model="clientForm.providers" :val="provider._id" :label="provider.name" color="primary" class="checkbox text-capitalize"
                     />
                   </q-item-section>
                     <q-item-section class="text-right">
@@ -83,7 +83,7 @@
                          />
                         <q-btn
                           class="q-ma-xs delete-provider"
-                         outline
+                          outline
                           size="sm"
                           @click="confirm(provider)"
                           color="negative"
@@ -240,6 +240,7 @@ export default {
       this.$q.dialog({
         title: 'Confirm',
         message: `Are you use you want to delete ${itemTitle}?`,
+        class: 'confirm-delete',
         cancel: true, persistent: true
       }).onOk(() => {
         if (!item['email']){
