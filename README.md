@@ -45,20 +45,20 @@ yarn dev
 
 ### Jest Unit Tests (for vuex store)
 ```bash
-yarn run test:unit:ci
+yarn run test:unit
 
 OR
 
-yarn run test:unit
+yarn run test:unit:ci
 ```
 
 ### To run Cypress E2E Tests
 ```bash
-yarn yarn run test:e2e:ci
+yarn run test:e2e
 
 OR
 
-yarn run test:e2e
+yarn yarn run test:e2e:ci
 ```
 
 ### Build the app for production
