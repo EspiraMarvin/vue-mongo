@@ -49,4 +49,4 @@ mongoose.connect(mongoUri,  {
 app.use('/api/client', clientRoutes)
 app.use('/api/provider', providerRoutes)
 
-app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`))
+app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`)).sockets
